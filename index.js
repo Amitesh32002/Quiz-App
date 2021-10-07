@@ -8,6 +8,42 @@ const scoreEl = document.querySelector('.score_board .score_num')
 const answerEl = document.querySelector('.score_board .answred_num')
 const submitBtn = document.querySelector(".submit_btn");
 
+// greeting section
+const greetSection = document.querySelector(".greeting_section");
+const greetInput = document.querySelector(".greeting_input");
+const greetButton = document.querySelector(".greeting_button");
+const greeting = document.querySelector(".greeting");
+const alert_box = document.querySelector(".alert_section");
+const alertBtn  = document.querySelector(".alert_btn");
+
+
+greetButton.addEventListener("click",()=>{
+    if(greetInput.value ==""){
+        alert_box.style.display='block';
+        alertBtn.addEventListener("click",()=>{
+            alert_box.style.display='none';
+        })
+    }
+    else{
+        greeting.style.display = "none";
+
+        const playerName = greetInput.value;
+        const greetPopup = document.createElement("div");
+        greetPopup.classList.add("greetPopup")
+        greetPopup.innerHTML = `
+        <h1>Welcome ${playerName}! Enjoy your quiz</h1>
+                <button id = "startbtn" class="start_playing_btn">Start</button>
+        ` 
+        greetSection.appendChild(greetPopup);
+    
+
+        const startBtn = document.querySelector("#startbtn");
+        startBtn.addEventListener("click", ()=>{
+            greetSection.style.display = 'none';
+        })
+    }
+    
+})
 let ques, ans;
 let options = [];
 let score = 0;
@@ -18,6 +54,8 @@ window.addEventListener('DOMContentLoaded', quizApp);
 
 
 async function quizApp() {
+
+
     addplaceholder()
     
     const data = await fetchQuiz();
@@ -42,6 +80,7 @@ form.addEventListener('submit',(e)=>
 })
 
 
+// after receiving all the data now we are generating html content and putting data there
 
 function generateTemplate(ques, options) {
 
@@ -52,7 +91,8 @@ function generateTemplate(ques, options) {
     options.map((option,index) => {
         const item = document.createElement('div');
         item.classList.add('option');
-        item.innerHTML = `
+        item.innerHTML = 
+        `
         <input type="radio" id="option_${index}" value="${option}" name="quiz">
         <label for="option_${index}">${option}</label>
         `
@@ -78,6 +118,7 @@ function cheakQuiz(selectedOption)
      
     });
 }
+
 function updateScoreBoard()
 {
     scoreEl.innerText = score;
@@ -148,11 +189,12 @@ function finishQuiz()
         quizApp();
     })
 }
+// fetching data from the server
 async function fetchQuiz() {
     const response = await fetch(baseUrl);
     const data = await response.json();
     // console.log(data.results);
-    return data.results;
+    return data.results; // after we receive response now we are returning this to quizApp function
 }
 
 function addplaceholder()
